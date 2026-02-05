@@ -1,0 +1,390 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ─── Enums ───────────────────────────────────────────────
+
+enum UserRole {
+  ADMIN
+  EDITOR
+  VIEWER
+  ARCHIVER
+  BOARD
+}
+
+enum MeetingStatus {
+  ACTIVE
+  ARCHIVED
+}
+
+enum TodoStatus {
+  NOT_STARTED
+  IN_PROGRESS
+  DONE
+  CARRY_FORWARD
+}
+
+enum IssueStatus {
+  OPEN
+  IN_PROGRESS
+  SOLVED
+  CARRY_FORWARD
+}
+
+enum IssuePriority {
+  LOW
+  MEDIUM
+  HIGH
+  CRITICAL
+}
+
+enum RockStatus {
+  ON_TRACK
+  OFF_TRACK
+  DONE
+  DROPPED
+}
+
+enum ScorecardStatus {
+  ON_TRACK
+  OFF_TRACK
+  MISSED
+}
+
+enum AiDraftStatus {
+  PENDING
+  APPLIED
+  REJECTED
+}
+
+enum AuditAction {
+  CREATE
+  UPDATE
+  DELETE
+  ARCHIVE
+  CARRY_FORWARD
+  AI_APPLY
+}
+
+// ─── Models ──────────────────────────────────────────────
+
+model Company {
+  id        String   @id @default(cuid())
+  name      String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  teams Team[]
+  users User[]
+
+  @@map("companies")
+}
+
+model Team {
+  id        String   @id @default(cuid())
+  name      String
+  companyId String
+
+  company  Company   @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  meetings Meeting[]
+  members  TeamMember[]
+  scorecardMetrics ScorecardMetric[]
+  rocks    Rock[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("teams")
+}
+
+model User {
+  id            String    @id @default(cuid())
+  email         String    @unique
+  name          String?
+  image         String?
+  emailVerified DateTime?
+  role          UserRole  @default(VIEWER)
+  companyId     String?
+
+  company       Company?       @relation(fields: [companyId], references: [id])
+  accounts      Account[]
+  sessions      Session[]
+  teamMembers   TeamMember[]
+  todos         Todo[]
+  rocks         Rock[]
+  ratings       Rating[]
+  issuesCreated Issue[]        @relation("IssueCreator")
+  issuesOwned   Issue[]        @relation("IssueOwner")
+  auditLogs     AuditLog[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("users")
+}
+
+model TeamMember {
+  id     String   @id @default(cuid())
+  teamId String
+  userId String
+  role   UserRole @default(EDITOR)
+
+  team Team @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([teamId, userId])
+  @@map("team_members")
+}
+
+// ─── NextAuth Models ─────────────────────────────────────
+
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String? @db.Text
+  access_token      String? @db.Text
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String? @db.Text
+  session_state     String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+  @@map("accounts")
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("sessions")
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+  @@map("verification_tokens")
+}
+
+// ─── Meetings ────────────────────────────────────────────
+
+model Meeting {
+  id               String        @id @default(cuid())
+  title            String
+  teamId           String
+  status           MeetingStatus @default(ACTIVE)
+  meetingDate      DateTime
+  previousMeetingId String?  @unique
+  archivedAt       DateTime?
+
+  team            Team           @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  previousMeeting Meeting?       @relation("MeetingChain", fields: [previousMeetingId], references: [id])
+  nextMeeting     Meeting?       @relation("MeetingChain")
+
+  todos           Todo[]
+  issues          Issue[]
+  ratings         Rating[]
+  scorecardEntries ScorecardEntry[]
+  aiDrafts        AiDraft[]
+  auditLogs       AuditLog[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("meetings")
+}
+
+// ─── Todos ───────────────────────────────────────────────
+
+model Todo {
+  id          String     @id @default(cuid())
+  title       String
+  description String?
+  status      TodoStatus @default(NOT_STARTED)
+  dueDate     DateTime?
+  ownerId     String
+  meetingId   String
+  carriedFromId String?  @unique
+
+  owner       User     @relation(fields: [ownerId], references: [id])
+  meeting     Meeting  @relation(fields: [meetingId], references: [id], onDelete: Cascade)
+  carriedFrom Todo?    @relation("TodoCarryForward", fields: [carriedFromId], references: [id])
+  carriedTo   Todo?    @relation("TodoCarryForward")
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("todos")
+}
+
+// ─── IDS Issues ──────────────────────────────────────────
+
+model Issue {
+  id          String        @id @default(cuid())
+  title       String
+  description String?
+  status      IssueStatus   @default(OPEN)
+  priority    IssuePriority @default(MEDIUM)
+  creatorId   String
+  ownerId     String?
+  meetingId   String
+  carriedFromId String?  @unique
+
+  creator     User     @relation("IssueCreator", fields: [creatorId], references: [id])
+  owner       User?    @relation("IssueOwner", fields: [ownerId], references: [id])
+  meeting     Meeting  @relation(fields: [meetingId], references: [id], onDelete: Cascade)
+  carriedFrom Issue?   @relation("IssueCarryForward", fields: [carriedFromId], references: [id])
+  carriedTo   Issue?   @relation("IssueCarryForward")
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("issues")
+}
+
+// ─── Rocks ───────────────────────────────────────────────
+
+model Rock {
+  id          String     @id @default(cuid())
+  title       String
+  description String?
+  status      RockStatus @default(ON_TRACK)
+  ownerId     String
+  teamId      String
+  dueDate     DateTime?
+
+  owner      User          @relation(fields: [ownerId], references: [id])
+  team       Team          @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  milestones RockMilestone[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("rocks")
+}
+
+model RockMilestone {
+  id       String   @id @default(cuid())
+  title    String
+  done     Boolean  @default(false)
+  rockId   String
+  dueDate  DateTime?
+
+  rock Rock @relation(fields: [rockId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("rock_milestones")
+}
+
+// ─── Scorecard ───────────────────────────────────────────
+
+model ScorecardMetric {
+  id          String  @id @default(cuid())
+  name        String
+  description String?
+  target      Float
+  unit        String?
+  teamId      String
+
+  team    Team             @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  entries ScorecardEntry[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("scorecard_metrics")
+}
+
+model ScorecardEntry {
+  id        String          @id @default(cuid())
+  actual    Float
+  status    ScorecardStatus
+  metricId  String
+  meetingId String
+
+  metric  ScorecardMetric @relation(fields: [metricId], references: [id], onDelete: Cascade)
+  meeting Meeting         @relation(fields: [meetingId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([metricId, meetingId])
+  @@map("scorecard_entries")
+}
+
+// ─── Ratings ─────────────────────────────────────────────
+
+model Rating {
+  id        String @id @default(cuid())
+  score     Int
+  userId    String
+  meetingId String
+
+  user    User    @relation(fields: [userId], references: [id])
+  meeting Meeting @relation(fields: [meetingId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+
+  @@unique([userId, meetingId])
+  @@map("ratings")
+}
+
+// ─── AI Drafts ───────────────────────────────────────────
+
+model AiDraft {
+  id            String        @id @default(cuid())
+  meetingId     String
+  summaryText   String?       @db.Text
+  proposals     Json?
+  warnings      String[]
+  confidence    Float?
+  status        AiDraftStatus @default(PENDING)
+
+  meeting Meeting @relation(fields: [meetingId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("ai_drafts")
+}
+
+// ─── Audit Log ───────────────────────────────────────────
+
+model AuditLog {
+  id         String      @id @default(cuid())
+  action     AuditAction
+  entityType String
+  entityId   String
+  before     Json?
+  after      Json?
+  userId     String
+  meetingId  String?
+
+  user    User     @relation(fields: [userId], references: [id])
+  meeting Meeting? @relation(fields: [meetingId], references: [id])
+
+  createdAt DateTime @default(now())
+
+  @@index([entityType, entityId])
+  @@index([meetingId])
+  @@map("audit_logs")
+}
