@@ -58,17 +58,17 @@ export async function archiveMeeting(meetingId: string, userId: string) {
     const todosToCarry = meeting.todos.filter(
       t => t.status === 'CARRY_FORWARD' || (t.status !== 'DONE' && t.dueDate && new Date(t.dueDate) < new Date())
     );
-    for (const todo of todosToCarry) {
-      await tx.todo.create({
-        data: {
+    if (todosToCarry.length > 0) {
+      await tx.todo.createMany({
+        data: todosToCarry.map(todo => ({
           title: todo.title,
           description: todo.description,
-          status: 'NOT_STARTED',
+          status: 'NOT_STARTED' as const,
           dueDate: todo.dueDate ? addDays(new Date(todo.dueDate), 7) : null,
           ownerId: todo.ownerId,
           meetingId: nextMeeting.id,
           carriedFromId: todo.id,
-        },
+        })),
       });
     }
 
@@ -76,18 +76,18 @@ export async function archiveMeeting(meetingId: string, userId: string) {
     const issuesToCarry = meeting.issues.filter(
       i => i.status === 'CARRY_FORWARD' || (i.status !== 'SOLVED')
     );
-    for (const issue of issuesToCarry) {
-      await tx.issue.create({
-        data: {
+    if (issuesToCarry.length > 0) {
+      await tx.issue.createMany({
+        data: issuesToCarry.map(issue => ({
           title: issue.title,
           description: issue.description,
-          status: 'OPEN',
+          status: 'OPEN' as const,
           priority: issue.priority,
           creatorId: issue.creatorId,
           ownerId: issue.ownerId,
           meetingId: nextMeeting.id,
           carriedFromId: issue.id,
-        },
+        })),
       });
     }
 
