@@ -1,0 +1,3 @@
+## 2024-05-18 - [Add aria-labels to Generic Icon-Only Buttons]
+**Learning:** Reusable components like modals often contain generic "close" buttons consisting of purely an SVG icon. Screen readers fail to announce these buttons properly without an explicit \`aria-label\`. Additionally, keyboard navigation users need an explicit focus ring since standard \`outline: none\` is typically applied.
+**Action:** Whenever building an icon-only button within a reusable UI component, always explicitly provide an \`aria-label\` and apply \`focus-visible:ring-2\` utilities to ensure accessibility across keyboard and screen reader devices.
