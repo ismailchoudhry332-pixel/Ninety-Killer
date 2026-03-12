@@ -1,0 +1,3 @@
+## 2024-05-15 - Modal Accessibility
+**Learning:** Icon-only buttons like the close button in modals often lack accessible names, making them difficult to use for screen reader users. Additionally, relying solely on color changes for hover states can be insufficient for some users. Providing an explicit `aria-label` and utilizing focus visible styles improves navigation and usability significantly.
+**Action:** Always add an `aria-label` to icon-only buttons. Add `aria-hidden="true"` to the decorative SVG icons. Ensure hover and focus states provide clear visual feedback without relying exclusively on color (e.g., using `focus-visible:ring-2`).
