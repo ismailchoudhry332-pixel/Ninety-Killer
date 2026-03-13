@@ -1,0 +1,3 @@
+## 2024-03-13 - Modal Accessibility Enhancements
+**Learning:** The Modal component was missing critical accessibility attributes such as `role="dialog"`, `aria-modal="true"`, and `aria-labelledby` for the title. The close button also lacked an `aria-label` and `aria-hidden` on its child SVG, which are standard for screen readers. Furthermore, focus-visible states were added to ensure keyboard accessibility.
+**Action:** When creating new components that act as overlays or modals, or components with icon-only buttons, always ensure these specific ARIA attributes and keyboard focus states are applied to ensure they are accessible to assistive technologies and keyboard users.
