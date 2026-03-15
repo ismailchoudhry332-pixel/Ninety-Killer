@@ -1,0 +1,3 @@
+## 2024-05-15 - Add ARIA Labels and Focus States to Modal Close Buttons
+**Learning:** Found a missing `aria-label` and `focus-visible` ring styles on the `Modal` close button. Without this, the modal could not be properly navigated and closed using keyboard or screen readers. This indicates a general pattern of missing accessibility properties for icon-only buttons in the UI component library.
+**Action:** When adding new icon-only buttons, especially in shared UI components (like Modals or Drawers), ensure that they have a clear `aria-label` to provide context for screen reader users and an accessible `focus-visible` styling using Tailwind outline utility classes (e.g. `focus-visible:ring-2`, `focus-visible:outline-none`) to support keyboard navigation.
