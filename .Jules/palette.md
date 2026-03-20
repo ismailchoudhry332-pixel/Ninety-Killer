@@ -1,0 +1,3 @@
+## 2024-05-24 - Modal Accessibility Standard
+**Learning:** The custom Modal component wrapper lacked structural ARIA attributes (`role="dialog"`, `aria-modal="true"`, `aria-labelledby`) and the icon-only close button was missing both an `aria-label` and visible focus states for keyboard users.
+**Action:** When implementing new modal/dialog components or similar overlays, always ensure the container defines `role="dialog"` and `aria-modal="true"`. Dynamically generate a title ID using the modal title to provide `aria-labelledby`. Ensure icon-only buttons include an `aria-label`, visible focus/hover states (e.g., `focus-visible:ring-2`), and `aria-hidden="true"` on their inner SVG graphics.
