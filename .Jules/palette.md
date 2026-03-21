@@ -1,0 +1,3 @@
+## 2024-05-24 - Explicit ARIA boundaries for custom Modals
+**Learning:** When creating custom modals, explicit ARIA boundaries (`role="dialog"`, `aria-modal="true"`, and `aria-labelledby="[id-of-heading]"`) are required to prevent screen readers from reading background content while the modal is open.
+**Action:** Always ensure custom modals have proper roles and attributes so that screen readers correctly handle the modal context. Add ARIA labels and focus visible styles for all icon-only interactive elements in the modal header.
