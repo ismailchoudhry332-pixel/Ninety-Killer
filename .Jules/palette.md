@@ -1,0 +1,3 @@
+## 2024-03-24 - Explicit ARIA boundaries for Modals
+**Learning:** Custom modals in this application lack explicit ARIA boundaries (`role="dialog"`, `aria-modal="true"`, and `aria-labelledby`), which creates an accessibility issue for screen readers trying to understand the context. Additionally, icon-only buttons need `aria-label` and explicit keyboard focus states (`focus-visible`).
+**Action:** When creating or modifying custom modals or overlays, always ensure `role="dialog"`, `aria-modal="true"`, and `aria-labelledby` are applied to the container, and link it to an ID on the title element. Always add `aria-label` and `focus-visible` styles to icon-only buttons.
