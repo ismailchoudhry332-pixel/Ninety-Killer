@@ -1,0 +1,3 @@
+## 2024-03-25 - Custom Modal Accessibility Boundaries
+**Learning:** Custom modals in this app (`src/components/ui/modal.tsx`) lack explicit ARIA boundaries (`role="dialog"`, `aria-modal="true"`, `aria-labelledby`), and the close button is icon-only without an `aria-label` or visible focus state. This causes screen readers to read the underlying page content instead of confining them to the modal, and the close action is completely unannounced.
+**Action:** When implementing or modifying custom modals, always enforce strict ARIA boundaries (`role="dialog"`, `aria-modal="true"`) and ensure all icon-only buttons (especially close actions) have descriptive `aria-label`s and `focus-visible` styles for keyboard navigation.
