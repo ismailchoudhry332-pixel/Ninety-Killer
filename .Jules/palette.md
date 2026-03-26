@@ -1,0 +1,3 @@
+## 2024-05-18 - Modal Accessibility Pattern
+**Learning:** Custom modals require explicit ARIA boundaries (`role="dialog"`, `aria-modal="true"`, and `aria-labelledby`) alongside keyboard management (Esc to close) and focus trapping to ensure screen readers recognize them and do not read content outside of them. Icon-only close buttons also strictly need an `aria-label` and `focus-visible` styling for keyboard navigation.
+**Action:** Always implement `role="dialog"`, `aria-modal="true"`, `aria-labelledby`, and provide an `aria-label` for any icon-only buttons within modals. Apply `focus-visible` for proper keyboard focus indication.
