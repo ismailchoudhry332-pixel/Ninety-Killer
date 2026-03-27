@@ -1,0 +1,3 @@
+## 2025-05-24 - Modal Accessibility Boundaries
+**Learning:** Custom modals in this app lacked explicit ARIA boundaries (`role="dialog"`, `aria-modal="true"`, and `aria-labelledby`) and focus-visible styling on icon-only close buttons. This is a critical pattern to follow for accessibility.
+**Action:** When implementing new custom modals, ensure `role="dialog"`, `aria-modal="true"`, and `aria-labelledby` are set. For any icon-only buttons, especially in modals, include an `aria-label` and `focus-visible:ring-2` styling.
