@@ -1,0 +1,3 @@
+## 2024-03-28 - [Accessible Modals in Custom Components]
+**Learning:** Custom modals (like `src/components/ui/modal.tsx`) lack explicit ARIA boundaries (`role="dialog"`, `aria-modal="true"`, and `aria-labelledby`) by default, preventing screen readers from accurately conveying the modal context and focus trapping. In addition, icon-only interactive elements often lack clear labels, and rely on non-visible states.
+**Action:** When adding or updating custom modals, always implement `role="dialog"`, `aria-modal="true"`, and `aria-labelledby` referencing the title's `id`. Also, make sure that any icon-only buttons like the close button have a clear `aria-label` and `focus-visible` styling for keyboard users.
