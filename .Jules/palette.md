@@ -1,0 +1,3 @@
+## 2026-03-29 - Modal Accessibility Boundaries
+**Learning:** Custom modals in this application's UI components lack explicit ARIA boundaries (`role="dialog"`, `aria-modal="true"`, `aria-labelledby`) and focus-visible states on their icon-only close buttons. This is a common pattern for custom modals that completely breaks screen reader flow, as users aren't trapped in the modal context.
+**Action:** When working with modals or floating overlay components, always establish clear ARIA boundaries and ensure icon-only buttons like "Close" have descriptive `aria-label` attributes and `focus-visible` styling using existing Tailwind tokens.
