@@ -1,0 +1,25 @@
+
+> ninety-killer@0.2.0 dev /app
+> next dev
+
+  ▲ Next.js 14.2.15
+  - Local:        http://localhost:3000
+
+ ✓ Starting...
+Attention: Next.js now collects completely anonymous telemetry regarding usage.
+This information is used to shape Next.js' roadmap and prioritize features.
+You can learn more, including how to opt-out if you'd not like to participate in this anonymous program, by visiting the following URL:
+https://nextjs.org/telemetry
+
+ ✓ Ready in 1835ms
+ ○ Compiling /teams ...
+ ✓ Compiled /teams in 5s (517 modules)
+ ✓ Compiled in 563ms (263 modules)
+ GET /teams 200 in 5609ms
+ ○ Compiling /api/companies ...
+ ✓ Compiled /api/companies in 7.3s (510 modules)
+ ✓ Compiled (512 modules)
+[next-auth][warn][NEXTAUTH_URL]
+https://next-auth.js.org/warnings#nextauth_url
+[next-auth][warn][NO_SECRET]
+https://next-auth.js.org/warnings#no_secret
