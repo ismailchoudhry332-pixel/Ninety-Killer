@@ -1,0 +1,3 @@
+## 2025-04-05 - Custom Modal Accessibility Boundaries
+**Learning:** Custom modals in this Next.js application lacked explicit ARIA boundaries, making it difficult for screen reader users to understand when a modal opens, its purpose, and to navigate it properly. The close button lacked an `aria-label` and `focus-visible` ring.
+**Action:** Always implement `role="dialog"`, `aria-modal="true"`, and an `aria-labelledby` linking to the modal title using `useId()` when creating custom modals. Ensure icon-only close buttons have `aria-label` and keyboard focus states like `focus-visible:outline-none focus-visible:ring-2`.
