@@ -1,0 +1,3 @@
+## 2024-05-18 - [Add accessibility attributes and unique IDs to custom modal]
+**Learning:** Custom modals in this app require explicit ARIA boundaries (`role="dialog"`, `aria-modal="true"`, and `aria-labelledby`) for screen readers. Furthermore, when generating unique IDs for `aria-labelledby` with React 18's `useId()`, it requires a fallback strategy to avoid crashes during isolated testing environments (like static HTML rendering for Playwright visual verifications).
+**Action:** When creating new interactive modal components or improving existing ones, ensure ARIA attributes are fully defined, icon-only buttons have `aria-label`, and `useId()` implementation includes a fallback ID.
