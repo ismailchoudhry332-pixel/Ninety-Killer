@@ -1,0 +1,3 @@
+## 2025-02-18 - Ensure Modals Implement ARIA Boundaries
+**Learning:** Custom modal components built without dedicated headless UI libraries need explicit accessible boundaries for screen readers (`role="dialog"`, `aria-modal="true"`, and `aria-labelledby`). Further, icon-only buttons like "close" need `aria-label` text, and proper `focus-visible` states to enable clear keyboard navigation. Using React 18's `useId()` correctly requires fallbacks if used in mixed client/server contexts to prevent hydration errors.
+**Action:** Always add `role="dialog"`, `aria-modal="true"`, and an explicitly generated `aria-labelledby` ID when building custom modal/overlay components, and ensure icon buttons have explicitly styled `focus-visible:ring` to aid keyboard users.
