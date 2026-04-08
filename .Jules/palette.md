@@ -1,0 +1,3 @@
+## 2024-05-24 - Accessibility upgrades for Custom Modals
+**Learning:** Custom modals implemented from scratch often lack basic accessibility attributes (like `role="dialog"`, `aria-modal="true"`, and `aria-labelledby`) and proper focus management on close buttons. When generating unique IDs in Next.js/React 18 for linking titles to the modal container, using `Math.random()` or `Date.now()` causes hydration mismatches between server and client.
+**Action:** Always use React 18's `useId()` for generating accessibility IDs in components to prevent hydration errors. Ensure all custom modals have proper roles and keyboard-accessible close buttons with `aria-label` and `focus-visible` styling.
