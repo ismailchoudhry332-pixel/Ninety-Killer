@@ -1,0 +1,3 @@
+## 2024-11-20 - Accessible Custom Modals in Next.js
+**Learning:** Custom modals built without a headless UI library in this Next.js app often lack explicit ARIA boundaries. Additionally, when components can be rendered iteratively, hardcoded IDs for `aria-labelledby` cause duplicate ID accessibility violations, requiring React's `useId()` for uniqueness.
+**Action:** When working on custom modals or dialogs, always ensure `role="dialog"`, `aria-modal="true"`, and `aria-labelledby` are implemented. Always bind the title using a unique ID generated from React's `useId()` (with a string fallback to prevent issues in strict environments).
