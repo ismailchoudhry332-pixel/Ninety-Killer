@@ -1,0 +1,4 @@
+
+## 2024-05-18 - Accessible Custom Modals
+**Learning:** Custom modals in this app require explicit ARIA boundaries (`role="dialog"`, `aria-modal="true"`, and `aria-labelledby`) and should use React 18's `useId()` for robust ID generation when mapping the title to the dialog's `aria-labelledby`. The `useId()` should have a fallback because it can occasionally be undefined during static esbuild rendering (though fine in Next.js). Also, icon-only close buttons inside these modals need `aria-label` and `focus-visible` styling to be keyboard and screen-reader accessible.
+**Action:** When creating new custom modals or interactive overlay components, always bind the title with `useId()` (providing a fallback) to `aria-labelledby`, explicitly set `role="dialog"` and `aria-modal="true"`, and verify that all interactive sub-elements (like close buttons) have semantic labels and visible focus states.
