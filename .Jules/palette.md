@@ -1,0 +1,3 @@
+## 2026-04-15 - [Modal Component ARIA Boundaries and Next.js useId fallback]
+**Learning:** Custom modals in this application need explicit ARIA boundaries (`role="dialog"`, `aria-modal="true"`, and `aria-labelledby`) to ensure accessibility for screen readers. Furthermore, when using esbuild to bundle isolated React components for Playwright testing via static HTML (which can happen for visual verifications), React 18's `useId()` hook may fail or return an empty/undefined value due to a missing framework context.
+**Action:** Always provide a fallback string when using `useId()` in UI components to prevent invalid ARIA attribute values and test crashes outside the Next.js runtime environment (e.g., `const id = useId(); const safeId = id || 'fallback-id'`).
