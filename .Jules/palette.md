@@ -1,0 +1,3 @@
+## 2024-11-20 - [Explicit ARIA boundaries on custom Modals]
+**Learning:** Custom UI components like modals require explicit ARIA properties (e.g. `role="dialog"`, `aria-modal="true"`, `aria-labelledby`) and hidden accessibility labels (`aria-label`) on decorative icon-only controls to be effectively parsed by screen readers.
+**Action:** Always include ARIA boundaries for overlay components and assign visible or hidden semantic labels for buttons missing text contents. When adding styles to interactive elements like buttons, include focus states using `focus-visible` utilities to enhance keyboard navigation accessibility.
