@@ -1,0 +1,3 @@
+## 2025-04-18 - Modal Accessibility Boundaries
+**Learning:** Custom modal components in Next.js/React applications often lack implicit accessibility properties. Without explicit `role="dialog"`, `aria-modal="true"`, and a linked title (`aria-labelledby`), screen reader users may not be aware they have entered a modal context or what the modal is for. Using `React.useId()` with a fallback ensures a unique, server-hydration-safe ID to link the title to the modal container.
+**Action:** Always ensure custom modals implement explicit ARIA boundaries (`role="dialog"`, `aria-modal="true"`) and use `useId()` to robustly link the modal container to its title via `aria-labelledby`. Ensure icon-only close buttons have an `aria-label`.
