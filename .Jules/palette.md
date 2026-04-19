@@ -1,0 +1,3 @@
+## 2024-10-31 - [Modal component lacked A11y bindings]
+**Learning:** The generic modal component was missing proper dialog role mappings, aria attributes mapping the label to the title, and keyboard focus states on the close button. Adding these properties helps screen readers understand context correctly. It's important to use React.useId() to ensure aria bindings to titles don't collide.
+**Action:** Always ensure modals have `role="dialog"`, `aria-modal="true"`, and an `aria-labelledby` linked to the heading. Make sure icon-only buttons like close buttons have `aria-label` and `focus-visible` styling with `aria-hidden` on the inner SVG.
