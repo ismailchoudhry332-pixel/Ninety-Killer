@@ -1,0 +1,3 @@
+## 2024-04-23 - Custom Modal Accessibility and React useId
+**Learning:** Custom modals require explicit ARIA boundaries (`role="dialog"`, `aria-modal="true"`, and `aria-labelledby`) to ensure proper screen reader support. Additionally, when components are bundled dynamically or used in environments without a React framework context (like Next.js vs static Playwright tests), React 18's `useId()` hook may fail or return undefined.
+**Action:** Always implement explicit ARIA boundaries for custom modals. Use React's `useId()` to dynamically link container and title elements, but ensure a safe fallback is provided (e.g., `const safeId = useId() || 'fallback-id'`) so the ID remains valid in all testing and rendering environments.
