@@ -1,0 +1,3 @@
+## 2024-05-15 - Modal Component Accessibility Enhancements
+**Learning:** Reusable overlay components like modals often lack critical accessibility attributes by default. Without `role="dialog"`, `aria-modal="true"`, and a linked title (`aria-labelledby`), screen reader users can get trapped or lose context. Icon-only close buttons frequently lack ARIA labels and focus indicators, making them difficult for keyboard and screen reader users to operate.
+**Action:** Always map a generated unique ID (using `useId()`) between the modal container and its title. Ensure icon-only buttons have descriptive `aria-label`s, hide the SVG with `aria-hidden="true"`, and provide clear `focus-visible` styling for keyboard navigation.
