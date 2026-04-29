@@ -1,0 +1,3 @@
+## 2026-04-29 - Modal Component Accessibility improvements
+**Learning:** For dialog overlays, we need to provide standard ARIA roles (role="dialog", aria-modal="true") on the container and link it to the title using aria-labelledby with a unique ID from useId() to ensure screen readers announce it properly. It's also important to mark icon-only buttons with an aria-label and ensure they have keyboard focus-visible styling since they might not natively show focus nicely in standard reset CSS.
+**Action:** Always include useId() when creating modals/dialogs, apply focus-visible utilities to dismiss buttons, and link title element IDs to aria-labelledby.
