@@ -1,0 +1,3 @@
+## 2024-05-02 - Custom Modals Lack ARIA Roles and Focus Styles
+**Learning:** Custom modal components in the repository lacked standard `role="dialog"`, `aria-modal="true"`, dynamic `aria-labelledby` IDs (using `useId()`), and clear `focus-visible` indicators for interactive elements like icon-only close buttons. This breaks screen reader functionality and keyboard navigation.
+**Action:** Always apply standard modal accessibility patterns: use `useId()` to link titles with container `aria-labelledby`, add `aria-label` to icon-only close buttons, and ensure `focus-visible` styles are applied for clear keyboard focus states.
