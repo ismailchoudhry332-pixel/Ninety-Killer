@@ -1,0 +1,3 @@
+## 2024-05-04 - Standardize Generic Modal Accessibility
+**Learning:** Found that generic wrapper components (like `Modal`) often omit structural accessibility attributes (like `role="dialog"` or linking titles with `aria-labelledby`) and proper states on icon-only dismiss buttons because their content varies.
+**Action:** When working on modal or dialog UI components, always ensure they apply standard accessibility patterns out of the box (e.g. `role="dialog"`, `aria-modal="true"`, `aria-labelledby`, and `useId()`), and ensure internal interactive elements (like icon-only close buttons) have explicit `aria-label`, visual `focus-visible` states, and mark decorative inner elements with `aria-hidden="true"`.
