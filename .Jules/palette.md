@@ -1,0 +1,3 @@
+## 2024-05-05 - Modal Accessibility Improvements
+**Learning:** Icon-only close buttons in modals often lack accessible names, and modal containers frequently miss `role="dialog"`, `aria-modal="true"`, and `aria-labelledby` attributes. Without these, screen readers struggle to convey the modal's purpose or presence, and keyboard users may not see focus states on the close button.
+**Action:** When creating or reviewing modal components, always verify that `role="dialog"` is present, an ID (generated via `useId()`) links the container to its title, and icon-only buttons have an `aria-label` and `focus-visible` styling.
