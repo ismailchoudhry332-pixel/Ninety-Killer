@@ -1,3 +1,6 @@
 ## 2024-05-11 - Modal Accessibility Pattern
 **Learning:** Found that the standard Modal component in the design system lacked critical ARIA attributes (role='dialog', aria-modal, aria-labelledby) and keyboard focus indicators for the close button. Adding these is crucial for screen reader users and keyboard navigators.
 **Action:** When implementing or reviewing future modal or overlay components, ensure they map title IDs correctly using `useId()`, define the dialog role, and explicitly hide decorative icons from screen readers while providing focus states for all interactive elements.
+## 2024-05-12 - Handling Empty States and Network Mocking in E2E Verification
+**Learning:** Found that when implementing loading and empty states for authenticated data pages, verifying the UI visually with Playwright often fails due to NextAuth 401s or missing database setup. Adding an `isLoading` state coupled with the `EmptyState` component creates a much smoother UX than flashing empty tables.
+**Action:** When working on similar authenticated list views, always include an explicit loading state to prevent layout shift. For verifying these states in isolation using Playwright, always mock the backend API responses using `page.route` to simulate empty or loading scenarios without needing full database/auth seeding.

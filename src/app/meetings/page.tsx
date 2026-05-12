@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { StatusBadge } from '@/components/ui/status-badge';
 import { Modal } from '@/components/ui/modal';
+import { EmptyState } from '@/components/ui/empty-state';
 
 export default function MeetingsPage() {
   const [meetings, setMeetings] = useState<any[]>([]);
@@ -11,12 +12,18 @@ export default function MeetingsPage() {
   const [filter, setFilter] = useState({ teamId: '', status: '' });
   const [showCreate, setShowCreate] = useState(false);
   const [form, setForm] = useState({ title: '', teamId: '', meetingDate: '' });
+  const [isLoading, setIsLoading] = useState(true);
 
   const loadMeetings = () => {
+    setIsLoading(true);
     const params = new URLSearchParams();
     if (filter.teamId) params.set('teamId', filter.teamId);
     if (filter.status) params.set('status', filter.status);
-    fetch(`/api/meetings?${params}`).then(r => r.json()).then(setMeetings).catch(() => {});
+    fetch(`/api/meetings?${params}`)
+      .then(r => r.json())
+      .then(setMeetings)
+      .catch(() => {})
+      .finally(() => setIsLoading(false));
   };
 
   useEffect(() => { loadMeetings(); }, [filter]);
@@ -90,8 +97,27 @@ export default function MeetingsPage() {
                 <td className="text-gray-500">{meeting._count?.ratings ?? 0}</td>
               </tr>
             ))}
-            {meetings.length === 0 && (
-              <tr><td colSpan={7} className="text-center text-gray-500 py-8">No meetings found</td></tr>
+            {meetings.length === 0 && !isLoading && (
+              <tr>
+                <td colSpan={7} className="p-8">
+                  <EmptyState
+                    title="No meetings found"
+                    description="Get started by creating a new meeting for your team."
+                    action={
+                      <button onClick={() => setShowCreate(true)} className="btn-primary">
+                        New Meeting
+                      </button>
+                    }
+                  />
+                </td>
+              </tr>
+            )}
+            {isLoading && meetings.length === 0 && (
+              <tr>
+                <td colSpan={7} className="text-center text-gray-500 py-8">
+                  Loading meetings...
+                </td>
+              </tr>
             )}
           </tbody>
         </table>
