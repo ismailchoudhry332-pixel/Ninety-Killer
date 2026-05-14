@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { Modal } from '@/components/ui/modal';
+import { EmptyState } from '@/components/ui/empty-state';
 
 export default function TeamsPage() {
   const [teams, setTeams] = useState<any[]>([]);
@@ -37,18 +38,30 @@ export default function TeamsPage() {
         <button onClick={() => setShowCreate(true)} className="btn-primary">Create Team</button>
       </div>
 
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-        {teams.map((team) => (
-          <Link key={team.id} href={`/teams/${team.id}`} className="card hover:shadow-md transition-shadow">
-            <h3 className="text-lg font-semibold text-gray-900">{team.name}</h3>
-            <p className="mt-1 text-sm text-gray-500">{team.company?.name}</p>
-            <div className="mt-4 flex gap-4 text-sm text-gray-500">
-              <span>{team._count?.members ?? 0} members</span>
-              <span>{team._count?.meetings ?? 0} meetings</span>
-            </div>
-          </Link>
-        ))}
-      </div>
+      {teams.length > 0 ? (
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          {teams.map((team) => (
+            <Link key={team.id} href={`/teams/${team.id}`} className="card hover:shadow-md transition-shadow">
+              <h3 className="text-lg font-semibold text-gray-900">{team.name}</h3>
+              <p className="mt-1 text-sm text-gray-500">{team.company?.name}</p>
+              <div className="mt-4 flex gap-4 text-sm text-gray-500">
+                <span>{team._count?.members ?? 0} members</span>
+                <span>{team._count?.meetings ?? 0} meetings</span>
+              </div>
+            </Link>
+          ))}
+        </div>
+      ) : (
+        <EmptyState
+          title="No teams yet"
+          description="Get started by creating your first team."
+          action={
+            <button onClick={() => setShowCreate(true)} className="btn-primary">
+              Create Team
+            </button>
+          }
+        />
+      )}
 
       <Modal open={showCreate} onClose={() => setShowCreate(false)} title="Create Team">
         <div className="space-y-4">
