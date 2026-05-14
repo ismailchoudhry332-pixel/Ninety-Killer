@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import prisma from '@/lib/prisma';
 import { getSessionUser, requireRole } from '@/lib/rbac';
 import { logAudit } from '@/lib/audit';
+import { CreateTodoSchema } from '@/lib/validations/todo';
 
 export async function GET(req: NextRequest) {
   const user = await getSessionUser();
@@ -24,7 +25,23 @@ export async function POST(req: NextRequest) {
   const authError = requireRole(user, 'ADMIN', 'EDITOR');
   if (authError) return authError;
 
-  const body = await req.json();
+  let json;
+  try {
+    json = await req.json();
+  } catch (e) {
+    return NextResponse.json({ error: 'Invalid JSON' }, { status: 400 });
+  }
+
+  const validation = CreateTodoSchema.safeParse(json);
+
+  if (!validation.success) {
+    return NextResponse.json(
+      { error: 'Invalid request body', details: validation.error.format() },
+      { status: 400 }
+    );
+  }
+
+  const body = validation.data;
 
   // Verify meeting is active
   const meeting = await prisma.meeting.findUnique({ where: { id: body.meetingId } });

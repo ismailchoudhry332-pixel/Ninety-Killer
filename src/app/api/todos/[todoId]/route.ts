@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import prisma from '@/lib/prisma';
 import { getSessionUser, requireRole } from '@/lib/rbac';
 import { logAudit } from '@/lib/audit';
+import { UpdateTodoSchema } from '@/lib/validations/todo';
 
 export async function PATCH(req: NextRequest, { params }: { params: { todoId: string } }) {
   const user = await getSessionUser();
@@ -17,15 +18,32 @@ export async function PATCH(req: NextRequest, { params }: { params: { todoId: st
     return NextResponse.json({ error: 'Cannot modify todos in archived meetings' }, { status: 400 });
   }
 
-  const body = await req.json();
+  let json;
+  try {
+    json = await req.json();
+  } catch (e) {
+    return NextResponse.json({ error: 'Invalid JSON' }, { status: 400 });
+  }
+
+  const validation = UpdateTodoSchema.safeParse(json);
+
+  if (!validation.success) {
+    return NextResponse.json(
+      { error: 'Invalid request body', details: validation.error.format() },
+      { status: 400 }
+    );
+  }
+
+  const body = validation.data;
+
   const todo = await prisma.todo.update({
     where: { id: params.todoId },
     data: {
-      ...(body.title !== undefined && { title: body.title }),
-      ...(body.description !== undefined && { description: body.description }),
-      ...(body.status !== undefined && { status: body.status }),
-      ...(body.dueDate !== undefined && { dueDate: body.dueDate ? new Date(body.dueDate) : null }),
-      ...(body.ownerId !== undefined && { ownerId: body.ownerId }),
+      title: body.title,
+      description: body.description,
+      status: body.status,
+      dueDate: body.dueDate ? new Date(body.dueDate) : (body.dueDate === null ? null : undefined),
+      ownerId: body.ownerId,
     },
     include: { owner: true },
   });
