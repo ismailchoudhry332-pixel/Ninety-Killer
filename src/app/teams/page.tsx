@@ -51,23 +51,27 @@ export default function TeamsPage() {
       </div>
 
       <Modal open={showCreate} onClose={() => setShowCreate(false)} title="Create Team">
-        <div className="space-y-4">
+        <form className="space-y-4" onSubmit={(e) => { e.preventDefault(); handleCreate(); }}>
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Team Name</label>
-            <input className="input" value={form.name} onChange={e => setForm(f => ({ ...f, name: e.target.value }))} placeholder="e.g., Leadership Team" />
+            <label htmlFor="team-name" className="block text-sm font-medium text-gray-700 mb-1">
+              Team Name <span className="text-red-500">*</span>
+            </label>
+            <input id="team-name" required className="input" value={form.name} onChange={e => setForm(f => ({ ...f, name: e.target.value }))} placeholder="e.g., Leadership Team" />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Company</label>
-            <select className="select" value={form.companyId} onChange={e => setForm(f => ({ ...f, companyId: e.target.value }))}>
+            <label htmlFor="team-company" className="block text-sm font-medium text-gray-700 mb-1">
+              Company <span className="text-red-500">*</span>
+            </label>
+            <select id="team-company" required className="select" value={form.companyId} onChange={e => setForm(f => ({ ...f, companyId: e.target.value }))}>
               <option value="">Select company</option>
               {companies.map((c: any) => <option key={c.id} value={c.id}>{c.name}</option>)}
             </select>
           </div>
           <div className="flex justify-end gap-3 pt-2">
-            <button onClick={() => setShowCreate(false)} className="btn-secondary">Cancel</button>
-            <button onClick={handleCreate} className="btn-primary">Create</button>
+            <button type="button" onClick={() => setShowCreate(false)} className="btn-secondary">Cancel</button>
+            <button type="submit" className="btn-primary">Create</button>
           </div>
-        </div>
+        </form>
       </Modal>
     </div>
   );
