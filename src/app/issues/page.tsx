@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { StatusBadge } from '@/components/ui/status-badge';
+import { EmptyState } from '@/components/ui/empty-state';
 
 export default function IssuesPage() {
   const [issues, setIssues] = useState<any[]>([]);
@@ -81,7 +82,11 @@ export default function IssuesPage() {
                 </tr>
               ))}
               {grouped.open.length === 0 && (
-                <tr><td colSpan={5} className="text-center text-gray-500 py-8">No open issues</td></tr>
+                <tr>
+                  <td colSpan={5} className="p-4">
+                    <EmptyState title="No open issues" description="You're all caught up!" />
+                  </td>
+                </tr>
               )}
             </tbody>
           </table>
