@@ -10,6 +10,7 @@ export default function ScorecardPage() {
   const [selectedTeam, setSelectedTeam] = useState('');
   const [showCreate, setShowCreate] = useState(false);
   const [form, setForm] = useState({ name: '', description: '', target: '', unit: '', teamId: '' });
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const loadMetrics = () => {
     const params = selectedTeam ? `?teamId=${selectedTeam}` : '';
@@ -19,16 +20,22 @@ export default function ScorecardPage() {
   useEffect(() => { loadMetrics(); }, [selectedTeam]);
   useEffect(() => { fetch('/api/teams').then(r => r.json()).then(setTeams).catch(() => {}); }, []);
 
-  const handleCreate = async () => {
+  const handleCreate = async (e?: React.FormEvent) => {
+    if (e) e.preventDefault();
     if (!form.name || !form.target || !form.teamId) return;
-    await fetch('/api/scorecard/metrics', {
+    setIsSubmitting(true);
+    try {
+      await fetch('/api/scorecard/metrics', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ ...form, target: parseFloat(form.target) }),
     });
-    setForm({ name: '', description: '', target: '', unit: '', teamId: '' });
-    setShowCreate(false);
-    loadMetrics();
+      setForm({ name: '', description: '', target: '', unit: '', teamId: '' });
+      setShowCreate(false);
+      loadMetrics();
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -78,38 +85,46 @@ export default function ScorecardPage() {
         )}
       </div>
 
-      <Modal open={showCreate} onClose={() => setShowCreate(false)} title="Add Scorecard Metric">
-        <div className="space-y-4">
+            <Modal open={showCreate} onClose={() => setShowCreate(false)} title="Add Scorecard Metric">
+        <form onSubmit={handleCreate} className="space-y-4">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Metric Name</label>
-            <input className="input" value={form.name} onChange={e => setForm(f => ({ ...f, name: e.target.value }))} placeholder="e.g., Revenue, NPS, Conversion Rate" />
+            <label htmlFor="metricName" className="block text-sm font-medium text-gray-700 mb-1">
+              Metric Name <span className="text-red-500">*</span>
+            </label>
+            <input id="metricName" required className="input" value={form.name} onChange={e => setForm(f => ({ ...f, name: e.target.value }))} placeholder="e.g., Revenue, NPS, Conversion Rate" />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Description</label>
-            <input className="input" value={form.description} onChange={e => setForm(f => ({ ...f, description: e.target.value }))} />
+            <label htmlFor="metricDescription" className="block text-sm font-medium text-gray-700 mb-1">Description</label>
+            <input id="metricDescription" className="input" value={form.description} onChange={e => setForm(f => ({ ...f, description: e.target.value }))} />
           </div>
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Target</label>
-              <input type="number" className="input" value={form.target} onChange={e => setForm(f => ({ ...f, target: e.target.value }))} />
+              <label htmlFor="metricTarget" className="block text-sm font-medium text-gray-700 mb-1">
+                Target <span className="text-red-500">*</span>
+              </label>
+              <input id="metricTarget" required type="number" className="input" value={form.target} onChange={e => setForm(f => ({ ...f, target: e.target.value }))} />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Unit</label>
-              <input className="input" value={form.unit} onChange={e => setForm(f => ({ ...f, unit: e.target.value }))} placeholder="e.g., %, $, users" />
+              <label htmlFor="metricUnit" className="block text-sm font-medium text-gray-700 mb-1">Unit</label>
+              <input id="metricUnit" className="input" value={form.unit} onChange={e => setForm(f => ({ ...f, unit: e.target.value }))} placeholder="e.g., %, $, users" />
             </div>
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Team</label>
-            <select className="select" value={form.teamId} onChange={e => setForm(f => ({ ...f, teamId: e.target.value }))}>
+            <label htmlFor="metricTeam" className="block text-sm font-medium text-gray-700 mb-1">
+              Team <span className="text-red-500">*</span>
+            </label>
+            <select id="metricTeam" required className="select" value={form.teamId} onChange={e => setForm(f => ({ ...f, teamId: e.target.value }))}>
               <option value="">Select team</option>
               {teams.map((t: any) => <option key={t.id} value={t.id}>{t.name}</option>)}
             </select>
           </div>
           <div className="flex justify-end gap-3 pt-2">
-            <button onClick={() => setShowCreate(false)} className="btn-secondary">Cancel</button>
-            <button onClick={handleCreate} className="btn-primary">Add Metric</button>
+            <button type="button" onClick={() => setShowCreate(false)} className="btn-secondary" disabled={isSubmitting}>Cancel</button>
+            <button type="submit" className="btn-primary" disabled={isSubmitting}>
+              {isSubmitting ? 'Adding...' : 'Add Metric'}
+            </button>
           </div>
-        </div>
+        </form>
       </Modal>
     </div>
   );
