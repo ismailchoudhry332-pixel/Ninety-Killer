@@ -1,3 +1,7 @@
 ## 2024-05-11 - Modal Accessibility Pattern
 **Learning:** Found that the standard Modal component in the design system lacked critical ARIA attributes (role='dialog', aria-modal, aria-labelledby) and keyboard focus indicators for the close button. Adding these is crucial for screen reader users and keyboard navigators.
 **Action:** When implementing or reviewing future modal or overlay components, ensure they map title IDs correctly using `useId()`, define the dialog role, and explicitly hide decorative icons from screen readers while providing focus states for all interactive elements.
+
+## 2024-06-04 - Empty State Onboarding Pattern
+**Learning:** Found that multiple core list and table views (Meetings, Rocks, Scorecard, Teams) displayed either plain text fallbacks ("No meetings found") or nothing at all when no items were present. This creates a confusing onboarding experience. Using the standardized `EmptyState` component (`@/components/ui/empty-state`) with a clear illustration, description, and primary call-to-action button significantly improves user onboarding and discoverability of core creation actions.
+**Action:** When implementing new list views or data tables, always include an actionable empty state using the `EmptyState` component instead of plain text fallbacks to guide users on their next steps. If the list is inside a `<tbody>`, make sure to wrap the empty state in a `<tr><td colSpan={X}>` to maintain valid HTML structure.
