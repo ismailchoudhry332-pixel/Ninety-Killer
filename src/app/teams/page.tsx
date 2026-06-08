@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { Modal } from '@/components/ui/modal';
+import { EmptyState } from '@/components/ui/empty-state';
 
 export default function TeamsPage() {
   const [teams, setTeams] = useState<any[]>([]);
@@ -48,6 +49,15 @@ export default function TeamsPage() {
             </div>
           </Link>
         ))}
+        {teams.length === 0 && (
+          <div className="col-span-full">
+            <EmptyState
+              title="No teams found"
+              description="Get started by creating a new team."
+              action={<button onClick={() => setShowCreate(true)} className="btn-primary">Create Team</button>}
+            />
+          </div>
+        )}
       </div>
 
       <Modal open={showCreate} onClose={() => setShowCreate(false)} title="Create Team">
