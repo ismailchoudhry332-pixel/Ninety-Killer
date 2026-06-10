@@ -10,6 +10,7 @@ export default function MeetingsPage() {
   const [teams, setTeams] = useState<any[]>([]);
   const [filter, setFilter] = useState({ teamId: '', status: '' });
   const [showCreate, setShowCreate] = useState(false);
+  const [isCreating, setIsCreating] = useState(false);
   const [form, setForm] = useState({ title: '', teamId: '', meetingDate: '' });
 
   const loadMeetings = () => {
@@ -22,21 +23,28 @@ export default function MeetingsPage() {
   useEffect(() => { loadMeetings(); }, [filter]);
   useEffect(() => { fetch('/api/teams').then(r => r.json()).then(setTeams).catch(() => {}); }, []);
 
-  const handleCreate = async () => {
+  const handleCreate = async (e?: React.FormEvent) => {
+    e?.preventDefault();
     if (!form.title || !form.teamId || !form.meetingDate) return;
-    const res = await fetch('/api/meetings', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(form),
-    });
-    if (!res.ok) {
-      const err = await res.json();
-      alert(err.error);
-      return;
+
+    setIsCreating(true);
+    try {
+      const res = await fetch('/api/meetings', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(form),
+      });
+      if (!res.ok) {
+        const err = await res.json();
+        alert(err.error);
+        return;
+      }
+      setForm({ title: '', teamId: '', meetingDate: '' });
+      setShowCreate(false);
+      loadMeetings();
+    } finally {
+      setIsCreating(false);
     }
-    setForm({ title: '', teamId: '', meetingDate: '' });
-    setShowCreate(false);
-    loadMeetings();
   };
 
   return (
@@ -98,27 +106,35 @@ export default function MeetingsPage() {
       </div>
 
       <Modal open={showCreate} onClose={() => setShowCreate(false)} title="Create Meeting">
-        <div className="space-y-4">
+        <form onSubmit={handleCreate} className="space-y-4">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Title</label>
-            <input className="input" value={form.title} onChange={e => setForm(f => ({ ...f, title: e.target.value }))} placeholder="e.g., Weekly L10 Meeting" />
+            <label htmlFor="title" className="block text-sm font-medium text-gray-700 mb-1">
+              Title <span className="text-red-500">*</span>
+            </label>
+            <input id="title" required className="input" value={form.title} onChange={e => setForm(f => ({ ...f, title: e.target.value }))} placeholder="e.g., Weekly L10 Meeting" />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Team</label>
-            <select className="select" value={form.teamId} onChange={e => setForm(f => ({ ...f, teamId: e.target.value }))}>
+            <label htmlFor="teamId" className="block text-sm font-medium text-gray-700 mb-1">
+              Team <span className="text-red-500">*</span>
+            </label>
+            <select id="teamId" required className="select" value={form.teamId} onChange={e => setForm(f => ({ ...f, teamId: e.target.value }))}>
               <option value="">Select team</option>
               {teams.map((t: any) => <option key={t.id} value={t.id}>{t.name}</option>)}
             </select>
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Meeting Date</label>
-            <input type="date" className="input" value={form.meetingDate} onChange={e => setForm(f => ({ ...f, meetingDate: e.target.value }))} />
+            <label htmlFor="meetingDate" className="block text-sm font-medium text-gray-700 mb-1">
+              Meeting Date <span className="text-red-500">*</span>
+            </label>
+            <input id="meetingDate" required type="date" className="input" value={form.meetingDate} onChange={e => setForm(f => ({ ...f, meetingDate: e.target.value }))} />
           </div>
           <div className="flex justify-end gap-3 pt-2">
-            <button onClick={() => setShowCreate(false)} className="btn-secondary">Cancel</button>
-            <button onClick={handleCreate} className="btn-primary">Create</button>
+            <button type="button" onClick={() => setShowCreate(false)} className="btn-secondary">Cancel</button>
+            <button type="submit" disabled={isCreating} className="btn-primary">
+              {isCreating ? 'Creating...' : 'Create'}
+            </button>
           </div>
-        </div>
+        </form>
       </Modal>
     </div>
   );
