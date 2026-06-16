@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
+import { EmptyState } from '@/components/ui/empty-state';
 
 interface DashboardStats {
   teams: number;
@@ -68,7 +69,15 @@ export default function DashboardPage() {
         <div className="card">
           <h2 className="text-lg font-semibold text-gray-900 mb-4">Active Meetings</h2>
           {recentMeetings.length === 0 ? (
-            <p className="text-sm text-gray-500">No active meetings</p>
+            <EmptyState
+              title="No active meetings"
+              description="Get started by scheduling your first meeting."
+              action={
+                <Link href="/meetings" className="btn-primary">
+                  New Meeting
+                </Link>
+              }
+            />
           ) : (
             <ul className="divide-y divide-gray-100">
               {recentMeetings.map((meeting: any) => (
