@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import { StatusBadge } from '@/components/ui/status-badge';
 import { Modal } from '@/components/ui/modal';
+import { EmptyState } from '@/components/ui/empty-state';
 
 export default function RocksPage() {
   const [rocks, setRocks] = useState<any[]>([]);
@@ -93,7 +94,17 @@ export default function RocksPage() {
                 </td>
               </tr>
             ))}
-            {rocks.length === 0 && <tr><td colSpan={6} className="text-center text-gray-500 py-8">No rocks</td></tr>}
+            {rocks.length === 0 && (
+              <tr>
+                <td colSpan={6} className="p-4">
+                  <EmptyState
+                    title="No rocks found"
+                    description="Get started by adding a new rock for your team."
+                    action={<button onClick={() => setShowCreate(true)} className="btn-primary">Add Rock</button>}
+                  />
+                </td>
+              </tr>
+            )}
           </tbody>
         </table>
       </div>
