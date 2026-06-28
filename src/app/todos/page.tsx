@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { StatusBadge } from '@/components/ui/status-badge';
+import { EmptyState } from '@/components/ui/empty-state';
 
 export default function TodosPage() {
   const [todos, setTodos] = useState<any[]>([]);
@@ -83,7 +84,14 @@ export default function TodosPage() {
                 </tr>
               ))}
               {grouped.active.length === 0 && (
-                <tr><td colSpan={5} className="text-center text-gray-500 py-8">No active todos</td></tr>
+                <tr>
+                  <td colSpan={5} className="p-4">
+                    <EmptyState
+                      title="No active todos"
+                      description="You're all caught up! Enjoy your free time."
+                    />
+                  </td>
+                </tr>
               )}
             </tbody>
           </table>
