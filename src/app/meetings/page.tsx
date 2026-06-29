@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { StatusBadge } from '@/components/ui/status-badge';
 import { Modal } from '@/components/ui/modal';
+import { EmptyState } from '@/components/ui/empty-state';
 
 export default function MeetingsPage() {
   const [meetings, setMeetings] = useState<any[]>([]);
@@ -91,7 +92,15 @@ export default function MeetingsPage() {
               </tr>
             ))}
             {meetings.length === 0 && (
-              <tr><td colSpan={7} className="text-center text-gray-500 py-8">No meetings found</td></tr>
+              <tr>
+                <td colSpan={7} className="p-4">
+                  <EmptyState
+                    title="No meetings found"
+                    description="Get started by creating a new meeting."
+                    action={<button onClick={() => setShowCreate(true)} className="btn-primary">New Meeting</button>}
+                  />
+                </td>
+              </tr>
             )}
           </tbody>
         </table>
