@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { StatusBadge } from '@/components/ui/status-badge';
 import { Modal } from '@/components/ui/modal';
+import { EmptyState } from '@/components/ui/empty-state';
 
 export default function MeetingsPage() {
   const [meetings, setMeetings] = useState<any[]>([]);
@@ -91,7 +92,15 @@ export default function MeetingsPage() {
               </tr>
             ))}
             {meetings.length === 0 && (
-              <tr><td colSpan={7} className="text-center text-gray-500 py-8">No meetings found</td></tr>
+              <tr>
+                <td colSpan={7} className="p-4">
+                  <EmptyState
+                    title="No meetings found"
+                    description="Get started by creating a new meeting."
+                    action={<button type="button" onClick={() => setShowCreate(true)} className="btn-primary">New Meeting</button>}
+                  />
+                </td>
+              </tr>
             )}
           </tbody>
         </table>
@@ -100,18 +109,18 @@ export default function MeetingsPage() {
       <Modal open={showCreate} onClose={() => setShowCreate(false)} title="Create Meeting">
         <div className="space-y-4">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Title</label>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Title <span className="text-red-500">*</span></label>
             <input className="input" value={form.title} onChange={e => setForm(f => ({ ...f, title: e.target.value }))} placeholder="e.g., Weekly L10 Meeting" />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Team</label>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Team <span className="text-red-500">*</span></label>
             <select className="select" value={form.teamId} onChange={e => setForm(f => ({ ...f, teamId: e.target.value }))}>
               <option value="">Select team</option>
               {teams.map((t: any) => <option key={t.id} value={t.id}>{t.name}</option>)}
             </select>
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Meeting Date</label>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Meeting Date <span className="text-red-500">*</span></label>
             <input type="date" className="input" value={form.meetingDate} onChange={e => setForm(f => ({ ...f, meetingDate: e.target.value }))} />
           </div>
           <div className="flex justify-end gap-3 pt-2">
