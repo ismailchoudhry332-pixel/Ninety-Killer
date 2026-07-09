@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import { StatusBadge } from '@/components/ui/status-badge';
 import { Modal } from '@/components/ui/modal';
+import { EmptyState } from '@/components/ui/empty-state';
 
 export default function ScorecardPage() {
   const [metrics, setMetrics] = useState<any[]>([]);
@@ -74,7 +75,13 @@ export default function ScorecardPage() {
           </div>
         ))}
         {metrics.length === 0 && (
-          <div className="text-center text-gray-500 py-12">No scorecard metrics defined</div>
+          <div className="py-8">
+            <EmptyState
+              title="No metrics found"
+              description="Get started by adding a new scorecard metric."
+              action={<button onClick={() => setShowCreate(true)} className="btn-primary">Add Metric</button>}
+            />
+          </div>
         )}
       </div>
 
