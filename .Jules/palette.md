@@ -1,3 +1,3 @@
-## 2024-05-11 - Modal Accessibility Pattern
-**Learning:** Found that the standard Modal component in the design system lacked critical ARIA attributes (role='dialog', aria-modal, aria-labelledby) and keyboard focus indicators for the close button. Adding these is crucial for screen reader users and keyboard navigators.
-**Action:** When implementing or reviewing future modal or overlay components, ensure they map title IDs correctly using `useId()`, define the dialog role, and explicitly hide decorative icons from screen readers while providing focus states for all interactive elements.
+## 2024-11-18 - Empty State Integration Pattern
+**Learning:** Replacing plain text table fallbacks (`<tr><td colSpan={N}>No items</td></tr>`) with the `EmptyState` component requires maintaining the table row/cell structure to avoid invalid HTML, but placing the component inside a `td` cell provides a much cleaner, actionable UX for empty lists.
+**Action:** Always wrap `EmptyState` in `<tr><td colSpan={N} className="p-4">...</td></tr>` when replacing empty states inside table bodies (`<tbody>`), ensuring the colSpan matches the table headers.
