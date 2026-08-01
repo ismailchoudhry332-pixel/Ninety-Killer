@@ -15,7 +15,8 @@ export default function TeamsPage() {
 
   useEffect(() => { loadTeams(); loadCompanies(); }, []);
 
-  const handleCreate = async () => {
+  const handleCreate = async (e?: React.FormEvent) => {
+    if (e) e.preventDefault();
     if (!form.name || !form.companyId) return;
     await fetch('/api/teams', {
       method: 'POST',
@@ -39,7 +40,7 @@ export default function TeamsPage() {
 
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {teams.map((team) => (
-          <Link key={team.id} href={`/teams/${team.id}`} className="card hover:shadow-md transition-shadow">
+          <Link key={team.id} href={`/teams/${team.id}`} className="card hover:shadow-md transition-shadow focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-600">
             <h3 className="text-lg font-semibold text-gray-900">{team.name}</h3>
             <p className="mt-1 text-sm text-gray-500">{team.company?.name}</p>
             <div className="mt-4 flex gap-4 text-sm text-gray-500">
@@ -51,23 +52,27 @@ export default function TeamsPage() {
       </div>
 
       <Modal open={showCreate} onClose={() => setShowCreate(false)} title="Create Team">
-        <div className="space-y-4">
+        <form className="space-y-4" onSubmit={handleCreate}>
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Team Name</label>
-            <input className="input" value={form.name} onChange={e => setForm(f => ({ ...f, name: e.target.value }))} placeholder="e.g., Leadership Team" />
+            <label htmlFor="teamName" className="block text-sm font-medium text-gray-700 mb-1">
+              Team Name <span className="text-red-500">*</span>
+            </label>
+            <input id="teamName" required className="input" value={form.name} onChange={e => setForm(f => ({ ...f, name: e.target.value }))} placeholder="e.g., Leadership Team" />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Company</label>
-            <select className="select" value={form.companyId} onChange={e => setForm(f => ({ ...f, companyId: e.target.value }))}>
+            <label htmlFor="companyId" className="block text-sm font-medium text-gray-700 mb-1">
+              Company <span className="text-red-500">*</span>
+            </label>
+            <select id="companyId" required className="select" value={form.companyId} onChange={e => setForm(f => ({ ...f, companyId: e.target.value }))}>
               <option value="">Select company</option>
               {companies.map((c: any) => <option key={c.id} value={c.id}>{c.name}</option>)}
             </select>
           </div>
           <div className="flex justify-end gap-3 pt-2">
-            <button onClick={() => setShowCreate(false)} className="btn-secondary">Cancel</button>
-            <button onClick={handleCreate} className="btn-primary">Create</button>
+            <button type="button" onClick={() => setShowCreate(false)} className="btn-secondary">Cancel</button>
+            <button type="submit" className="btn-primary">Create</button>
           </div>
-        </div>
+        </form>
       </Modal>
     </div>
   );
