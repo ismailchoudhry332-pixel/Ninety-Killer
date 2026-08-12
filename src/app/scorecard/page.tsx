@@ -19,8 +19,8 @@ export default function ScorecardPage() {
   useEffect(() => { loadMetrics(); }, [selectedTeam]);
   useEffect(() => { fetch('/api/teams').then(r => r.json()).then(setTeams).catch(() => {}); }, []);
 
-  const handleCreate = async () => {
-    if (!form.name || !form.target || !form.teamId) return;
+  const handleCreate = async (e: React.FormEvent) => {
+    e.preventDefault();
     await fetch('/api/scorecard/metrics', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -79,37 +79,43 @@ export default function ScorecardPage() {
       </div>
 
       <Modal open={showCreate} onClose={() => setShowCreate(false)} title="Add Scorecard Metric">
-        <div className="space-y-4">
+        <form onSubmit={handleCreate} className="space-y-4">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Metric Name</label>
-            <input className="input" value={form.name} onChange={e => setForm(f => ({ ...f, name: e.target.value }))} placeholder="e.g., Revenue, NPS, Conversion Rate" />
+            <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1">
+              Metric Name <span className="text-red-500">*</span>
+            </label>
+            <input id="name" required className="input" value={form.name} onChange={e => setForm(f => ({ ...f, name: e.target.value }))} placeholder="e.g., Revenue, NPS, Conversion Rate" />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Description</label>
-            <input className="input" value={form.description} onChange={e => setForm(f => ({ ...f, description: e.target.value }))} />
+            <label htmlFor="description" className="block text-sm font-medium text-gray-700 mb-1">Description</label>
+            <input id="description" className="input" value={form.description} onChange={e => setForm(f => ({ ...f, description: e.target.value }))} />
           </div>
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Target</label>
-              <input type="number" className="input" value={form.target} onChange={e => setForm(f => ({ ...f, target: e.target.value }))} />
+              <label htmlFor="target" className="block text-sm font-medium text-gray-700 mb-1">
+                Target <span className="text-red-500">*</span>
+              </label>
+              <input id="target" required type="number" className="input" value={form.target} onChange={e => setForm(f => ({ ...f, target: e.target.value }))} />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Unit</label>
-              <input className="input" value={form.unit} onChange={e => setForm(f => ({ ...f, unit: e.target.value }))} placeholder="e.g., %, $, users" />
+              <label htmlFor="unit" className="block text-sm font-medium text-gray-700 mb-1">Unit</label>
+              <input id="unit" className="input" value={form.unit} onChange={e => setForm(f => ({ ...f, unit: e.target.value }))} placeholder="e.g., %, $, users" />
             </div>
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Team</label>
-            <select className="select" value={form.teamId} onChange={e => setForm(f => ({ ...f, teamId: e.target.value }))}>
+            <label htmlFor="teamId" className="block text-sm font-medium text-gray-700 mb-1">
+              Team <span className="text-red-500">*</span>
+            </label>
+            <select id="teamId" required className="select" value={form.teamId} onChange={e => setForm(f => ({ ...f, teamId: e.target.value }))}>
               <option value="">Select team</option>
               {teams.map((t: any) => <option key={t.id} value={t.id}>{t.name}</option>)}
             </select>
           </div>
           <div className="flex justify-end gap-3 pt-2">
-            <button onClick={() => setShowCreate(false)} className="btn-secondary">Cancel</button>
-            <button onClick={handleCreate} className="btn-primary">Add Metric</button>
+            <button type="button" onClick={() => setShowCreate(false)} className="btn-secondary">Cancel</button>
+            <button type="submit" className="btn-primary">Add Metric</button>
           </div>
-        </div>
+        </form>
       </Modal>
     </div>
   );
