@@ -1,3 +1,6 @@
 ## 2024-05-11 - Modal Accessibility Pattern
 **Learning:** Found that the standard Modal component in the design system lacked critical ARIA attributes (role='dialog', aria-modal, aria-labelledby) and keyboard focus indicators for the close button. Adding these is crucial for screen reader users and keyboard navigators.
 **Action:** When implementing or reviewing future modal or overlay components, ensure they map title IDs correctly using `useId()`, define the dialog role, and explicitly hide decorative icons from screen readers while providing focus states for all interactive elements.
+## 2024-05-11 - Decorative Icon Accessibility
+**Learning:** Decorative inline SVG icons used repeatedly in navigation links (like those in the sidebar) can cause significant screen reader noise if not explicitly hidden. Standardizing an `aria-hidden` prop interface for UI-level icon components provides a scalable way to silence these when they are strictly visual accompaniments to text labels.
+**Action:** When creating or updating icon components, expose an `aria-hidden` prop. Apply `aria-hidden="true"` to any instance where the icon serves solely as visual decoration alongside an explicitly labeled link or button.
