@@ -1,3 +1,6 @@
 ## 2024-05-11 - Modal Accessibility Pattern
 **Learning:** Found that the standard Modal component in the design system lacked critical ARIA attributes (role='dialog', aria-modal, aria-labelledby) and keyboard focus indicators for the close button. Adding these is crucial for screen reader users and keyboard navigators.
 **Action:** When implementing or reviewing future modal or overlay components, ensure they map title IDs correctly using `useId()`, define the dialog role, and explicitly hide decorative icons from screen readers while providing focus states for all interactive elements.
+## 2023-10-27 - Modal Form Refactoring Pattern
+**Learning:** Many modals in this application are built using basic `<div>` wrappers instead of `<form>` elements, which breaks native browser behaviors like "Enter-to-submit" and native HTML5 validation (like the `required` attribute).
+**Action:** When working on modals that collect user input, refactor the `<div>` container into a `<form onSubmit={...}>`. Ensure to connect `<label htmlFor="id">` and `<input id="id">` for screen readers, append visually distinct required indicators (`<span className="text-red-500">*</span>`), use `e.preventDefault()` in the submit handler, and explicitly set `type="button"` on cancel actions and `type="submit"` on the primary action.
