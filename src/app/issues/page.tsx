@@ -1,28 +1,34 @@
-'use client';
+"use client";
 
-import { useEffect, useState } from 'react';
-import Link from 'next/link';
-import { StatusBadge } from '@/components/ui/status-badge';
+import { useEffect, useState } from "react";
+import Link from "next/link";
+import { StatusBadge } from "@/components/ui/status-badge";
+import { EmptyState } from "@/components/ui/empty-state";
 
 export default function IssuesPage() {
   const [issues, setIssues] = useState<any[]>([]);
 
   useEffect(() => {
-    fetch('/api/issues').then(r => r.json()).then(setIssues).catch(() => {});
+    fetch("/api/issues")
+      .then((r) => r.json())
+      .then(setIssues)
+      .catch(() => {});
   }, []);
 
   const handleUpdateStatus = async (issueId: string, status: string) => {
     await fetch(`/api/issues/${issueId}`, {
-      method: 'PATCH',
-      headers: { 'Content-Type': 'application/json' },
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ status }),
     });
-    fetch('/api/issues').then(r => r.json()).then(setIssues);
+    fetch("/api/issues")
+      .then((r) => r.json())
+      .then(setIssues);
   };
 
   const grouped = {
-    open: issues.filter(i => i.status !== 'SOLVED'),
-    solved: issues.filter(i => i.status === 'SOLVED'),
+    open: issues.filter((i) => i.status !== "SOLVED"),
+    solved: issues.filter((i) => i.status === "SOLVED"),
   };
 
   return (
@@ -33,7 +39,9 @@ export default function IssuesPage() {
       </div>
 
       <div className="mb-6">
-        <h2 className="text-lg font-semibold text-gray-900 mb-3">Open Issues ({grouped.open.length})</h2>
+        <h2 className="text-lg font-semibold text-gray-900 mb-3">
+          Open Issues ({grouped.open.length})
+        </h2>
         <div className="table-container">
           <table>
             <thead>
@@ -48,26 +56,43 @@ export default function IssuesPage() {
             <tbody className="divide-y divide-gray-100">
               {grouped.open.map((issue) => (
                 <tr key={issue.id} className="hover:bg-gray-50">
-                  <td><StatusBadge status={issue.priority} /></td>
+                  <td>
+                    <StatusBadge status={issue.priority} />
+                  </td>
                   <td>
                     <div className="flex items-center gap-2">
-                      <span className="font-medium text-gray-900">{issue.title}</span>
-                      {issue.carriedFrom && <span className="badge-yellow text-xs">Carried</span>}
+                      <span className="font-medium text-gray-900">
+                        {issue.title}
+                      </span>
+                      {issue.carriedFrom && (
+                        <span className="badge-yellow text-xs">Carried</span>
+                      )}
                     </div>
-                    {issue.description && <p className="text-xs text-gray-500 mt-0.5">{issue.description}</p>}
+                    {issue.description && (
+                      <p className="text-xs text-gray-500 mt-0.5">
+                        {issue.description}
+                      </p>
+                    )}
                   </td>
-                  <td className="text-gray-500">{issue.owner?.name || issue.creator?.name}</td>
+                  <td className="text-gray-500">
+                    {issue.owner?.name || issue.creator?.name}
+                  </td>
                   <td>
-                    <Link href={`/meetings/${issue.meetingId}`} className="text-primary-600 hover:underline text-xs">
+                    <Link
+                      href={`/meetings/${issue.meetingId}`}
+                      className="text-primary-600 hover:underline text-xs"
+                    >
                       {issue.meeting?.title}
                     </Link>
                   </td>
                   <td>
-                    {issue.meeting?.status === 'ACTIVE' ? (
+                    {issue.meeting?.status === "ACTIVE" ? (
                       <select
                         className="select text-xs w-32"
                         value={issue.status}
-                        onChange={e => handleUpdateStatus(issue.id, e.target.value)}
+                        onChange={(e) =>
+                          handleUpdateStatus(issue.id, e.target.value)
+                        }
                       >
                         <option value="OPEN">Open</option>
                         <option value="IN_PROGRESS">In Progress</option>
@@ -81,7 +106,14 @@ export default function IssuesPage() {
                 </tr>
               ))}
               {grouped.open.length === 0 && (
-                <tr><td colSpan={5} className="text-center text-gray-500 py-8">No open issues</td></tr>
+                <tr>
+                  <td colSpan={5} className="p-4">
+                    <EmptyState
+                      title="No open issues"
+                      description="Great job! There are no open issues."
+                    />
+                  </td>
+                </tr>
               )}
             </tbody>
           </table>
@@ -95,12 +127,19 @@ export default function IssuesPage() {
         <div className="table-container mt-3">
           <table>
             <thead>
-              <tr><th>Priority</th><th>Title</th><th>Owner</th><th>Meeting</th></tr>
+              <tr>
+                <th>Priority</th>
+                <th>Title</th>
+                <th>Owner</th>
+                <th>Meeting</th>
+              </tr>
             </thead>
             <tbody className="divide-y divide-gray-100">
               {grouped.solved.map((issue) => (
                 <tr key={issue.id} className="opacity-60">
-                  <td><StatusBadge status={issue.priority} /></td>
+                  <td>
+                    <StatusBadge status={issue.priority} />
+                  </td>
                   <td>{issue.title}</td>
                   <td className="text-gray-500">{issue.owner?.name}</td>
                   <td className="text-gray-500">{issue.meeting?.title}</td>
