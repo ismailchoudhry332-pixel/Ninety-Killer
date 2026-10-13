@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import { EmptyState } from '@/components/ui/empty-state';
 
 export default function BoardPage() {
   const [dashboard, setDashboard] = useState<any[]>([]);
@@ -129,7 +130,10 @@ export default function BoardPage() {
           </div>
         ))}
         {dashboard.length === 0 && (
-          <div className="text-center text-gray-500 py-12">No companies configured yet</div>
+          <EmptyState
+            title="No companies configured yet"
+            description="Create your first company and team to get started."
+          />
         )}
       </div>
     </div>
