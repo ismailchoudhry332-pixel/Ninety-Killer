@@ -1,3 +1,6 @@
 ## 2024-05-11 - Modal Accessibility Pattern
 **Learning:** Found that the standard Modal component in the design system lacked critical ARIA attributes (role='dialog', aria-modal, aria-labelledby) and keyboard focus indicators for the close button. Adding these is crucial for screen reader users and keyboard navigators.
 **Action:** When implementing or reviewing future modal or overlay components, ensure they map title IDs correctly using `useId()`, define the dialog role, and explicitly hide decorative icons from screen readers while providing focus states for all interactive elements.
+## 2024-05-18 - Navigation Link Accessibility Pattern
+**Learning:** Found that the sidebar navigation links lacked both a semantic indication of the currently active page for screen readers and visible focus styles for keyboard users.
+**Action:** When implementing or modifying navigation links in the future, explicitly set `aria-current="page"` based on the active state and include the standard focus outline indicator (`focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-600`) to improve accessibility. Also ensure that accompanying decorative icons include `aria-hidden="true"`.
